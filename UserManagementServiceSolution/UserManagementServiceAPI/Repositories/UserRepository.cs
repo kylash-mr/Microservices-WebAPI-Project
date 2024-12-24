@@ -22,18 +22,6 @@ namespace UserManagementServiceAPI.Repositories
             return user;
         }
 
-        public async Task<User> DeleteUser(string userId)
-        {
-            var user =  await GetUser(userId);
-            if (user == null)
-            {
-                throw new Exception("User not found");
-            }
-             _userDbContext.Users.Remove(user);
-            await _userDbContext.SaveChangesAsync();
-            return user;
-        }
-
         public async Task<ICollection<User>> GetAllUsers()
         {
             if (_userDbContext.Users.Count() == 0)
@@ -43,25 +31,20 @@ namespace UserManagementServiceAPI.Repositories
             return await _userDbContext.Users.ToListAsync();
         }
 
-        public async Task<User> GetUser(string userName)
-        { 
-            if (userName == "" || userName == null)
+        public async Task<User> GetUserById(string userId)
+        {
+            var user = await _userDbContext.Users.SingleOrDefaultAsync(u => u.UserName == userId);
+            if (user == null)
             {
-                throw new Exception("Invalid UserId");
+                throw new Exception("User not found");
             }
-
-            var usertofetch = await _userDbContext.Users.SingleOrDefaultAsync(u => u.UserName == userName);
-            if (usertofetch == null)
-            {
-                throw new Exception("User not found in the database");
-            }
-            return usertofetch;
+            return user;
         }
 
        
         public async Task<User> UpdateUser(User user)
         {
-            var usertoupdate =await  GetUser(user.UserName);
+            var usertoupdate =await  GetUserById(user.UserId.ToString());
             if (usertoupdate == null)
             {
                 throw new Exception("User not found in the database");

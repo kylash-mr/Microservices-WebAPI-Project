@@ -15,12 +15,12 @@ namespace UserManagementServiceAPI.Services
     {
         private readonly IUserRepository _userRepository;
 
+        private readonly byte[] _key;
         public UserService(IUserRepository userRepository,IConfiguration configuration)
         {
             _userRepository = userRepository;
-            _key = Encoding.UTF8.GetBytes(configuration["Keys:TokenKey"] ?? "");
+            _key = Encoding.UTF8.GetBytes(configuration["Keys:TokenKey"] ?? throw new ArgumentNullException("TokenKey is not configured."));
         }
-        private readonly byte[] _key;
 
         
         public async Task<string> GenerateToken(UserDTO user)
@@ -46,7 +46,7 @@ namespace UserManagementServiceAPI.Services
 
         public async Task<UserDTO> GetUserById(string userId)
         {
-            var usertofetch = await _userRepository.GetUser(userId);
+            var usertofetch = await _userRepository.GetUserById(userId);
             if (usertofetch == null)
             {
                 throw new Exception("User not found in the database");
@@ -68,27 +68,30 @@ namespace UserManagementServiceAPI.Services
 
         public async Task<UserDTO> LoginUser(UserLoginDTO userLoginDTO)
         {
-            var user = await _userRepository.GetUser(userLoginDTO.UserName);
-            if (user == null)
+            var existingUser = await _userRepository.GetUserById(userLoginDTO.UserName);
+            if (existingUser == null)
             {
                 throw new Exception("User not found");
             }
-            HMACSHA256 hmac = new HMACSHA256(user.Key);
+            HMACSHA256 hmac = new HMACSHA256(existingUser.Key);
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(userLoginDTO.Password));
-            if (!computedHash.SequenceEqual(user.Password))
+            if (!computedHash.SequenceEqual(existingUser.Password))
             {
                 throw new Exception("Invalid password");
             }
-            var userResponse = new UserDTO
+            return new UserDTO
             {
-                UserName = user.UserName,
-                Role = user.Role,
-                Email = user.Email,
-                Token = ""
-
+                UserId = existingUser.UserId, 
+                UserName = existingUser.UserName,
+                Email = existingUser.Email,
+                Role = existingUser.Role,
+                Token = await GenerateToken(new UserDTO 
+                {
+                    UserName = existingUser.UserName,
+                    Role = existingUser.Role,
+                    Email = existingUser.Email
+                })
             };
-            userResponse.Token = await GenerateToken(userResponse);
-            return userResponse;
 
         }
 
@@ -107,8 +110,6 @@ namespace UserManagementServiceAPI.Services
             user.Role = userRegisterDTO.Role;
             user.Key = hmac.Key;
             user.Password = hmac.ComputeHash(Encoding.UTF8.GetBytes(userRegisterDTO.Password));
-            user.UserAge = userRegisterDTO.UserAge;
-            user.UserId = Guid.NewGuid().ToString();
             user.Token = await GenerateToken(new UserDTO
             {
                 UserName = userRegisterDTO.UserName,
@@ -124,20 +125,19 @@ namespace UserManagementServiceAPI.Services
 
 
         public async Task<User> UpdateUser(UserDTO userDTO)
-        {
-            var user = await _userRepository.GetUser(userDTO.UserName);
-            if (user == null)
+        {   
+            var existingUser = await _userRepository.GetUserById(userDTO.UserId.ToString());
+            if (existingUser == null)
             {
                 throw new Exception("User not found in the database");
             }
-            
-            var updatedUser =await _userRepository.UpdateUser(new User
-            {
-                UserName = userDTO.UserName,
-                Email = userDTO.Email,
-                Role = userDTO.Role,
-            });
-            return updatedUser;
+
+            existingUser.UserName = userDTO.UserName; // directly update fields instead of creating a new object
+            existingUser.Email = userDTO.Email;
+            existingUser.Role = userDTO.Role;
+
+            return await _userRepository.UpdateUser(existingUser);
+
         }
     }
 }

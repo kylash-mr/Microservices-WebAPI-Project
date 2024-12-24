@@ -23,8 +23,11 @@ namespace UserManagementServiceAPI.Migrations
 
             modelBuilder.Entity("UserManagementServiceAPI.Models.User", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -45,9 +48,6 @@ namespace UserManagementServiceAPI.Migrations
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserAge")
-                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .IsRequired()

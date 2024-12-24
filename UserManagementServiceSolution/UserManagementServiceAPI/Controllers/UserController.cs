@@ -78,10 +78,10 @@ namespace UserManagementServiceAPI.Controllers
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status400BadRequest)]
 
-        public async Task<IActionResult> GetUserById(string userId)
+        public async Task<IActionResult> GetUserById(int userId)
         {
             try {
-                var user = await _userService.GetUserById(userId);
+                var user = await _userService.GetUserById(userId.ToString());
                 if (user == null)
                 {
                     return NotFound($"No Users found with User ID - {userId}");

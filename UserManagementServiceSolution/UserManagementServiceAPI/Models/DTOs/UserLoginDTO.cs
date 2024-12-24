@@ -9,5 +9,6 @@ namespace UserManagementServiceAPI.Models.DTOs
 
         [Required(ErrorMessage = "Password is mandatory")]
         public string Password { get; set; } = string.Empty;
+
     }
 }

@@ -11,7 +11,7 @@ using UserManagementServiceAPI.DbContexts;
 namespace UserManagementServiceAPI.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20241224083515_Init")]
+    [Migration("20241224110842_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -26,8 +26,11 @@ namespace UserManagementServiceAPI.Migrations
 
             modelBuilder.Entity("UserManagementServiceAPI.Models.User", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -48,9 +51,6 @@ namespace UserManagementServiceAPI.Migrations
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserAge")
-                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .IsRequired()
