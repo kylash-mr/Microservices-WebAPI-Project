@@ -54,43 +54,24 @@ namespace UserManagementServiceAPI.Controllers
             }
         }
 
-        [HttpPut("{userId}")]
-        [Authorize(Roles = "Admin")]
-        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> UpdateUser(string userId, [FromBody] UserDTO userDTO)
-        {
-            try
-            {
-                var user = await _userService.UpdateUser(userDTO);
-                if (user == null)
-                {
-                    return BadRequest("Invalid User ID");
-                }
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         [HttpGet("{userId}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status400BadRequest)]
 
-        public async Task<IActionResult> GetUserById(int userId)
+        public async Task<IActionResult> GetUserById(string userId)
         {
             try {
-                var user = await _userService.GetUserById(userId.ToString());
+                var user = await _userService.GetUserById(userId);
                 if (user == null)
                 {
-                    return NotFound($"No Users found with User ID - {userId}");
+                    return NotFound("No Users found with that Username");
                 }
                 return Ok(user);
             }
             catch (Exception)
             {
-                throw new Exception($"Couldn't get the User with Id - {userId}");
+                throw new Exception("Couldn't get the User details");
             }
         }
     }

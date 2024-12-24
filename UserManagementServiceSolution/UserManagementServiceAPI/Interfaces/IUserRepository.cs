@@ -8,6 +8,5 @@ namespace UserManagementServiceAPI.Interfaces
         Task<User> AddUser(User user);
         Task<ICollection<User>> GetAllUsers();
         Task<User> GetUserById(string userId);
-        Task<User> UpdateUser(User user);
     }
 }

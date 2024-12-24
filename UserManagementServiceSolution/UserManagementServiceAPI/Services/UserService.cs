@@ -124,20 +124,5 @@ namespace UserManagementServiceAPI.Services
         }
 
 
-        public async Task<User> UpdateUser(UserDTO userDTO)
-        {   
-            var existingUser = await _userRepository.GetUserById(userDTO.UserId.ToString());
-            if (existingUser == null)
-            {
-                throw new Exception("User not found in the database");
-            }
-
-            existingUser.UserName = userDTO.UserName; // directly update fields instead of creating a new object
-            existingUser.Email = userDTO.Email;
-            existingUser.Role = userDTO.Role;
-
-            return await _userRepository.UpdateUser(existingUser);
-
-        }
     }
 }

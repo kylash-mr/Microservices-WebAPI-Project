@@ -42,17 +42,5 @@ namespace UserManagementServiceAPI.Repositories
         }
 
        
-        public async Task<User> UpdateUser(User user)
-        {
-            var usertoupdate =await  GetUserById(user.UserId.ToString());
-            if (usertoupdate == null)
-            {
-                throw new Exception("User not found in the database");
-            }
-             _userDbContext.Users.Update(user);
-             await _userDbContext.SaveChangesAsync();
-            return  usertoupdate;
-
-        }
     }
 }
