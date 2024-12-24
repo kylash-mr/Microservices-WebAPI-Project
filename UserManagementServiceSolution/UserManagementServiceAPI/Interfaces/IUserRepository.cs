@@ -7,9 +7,8 @@ namespace UserManagementServiceAPI.Interfaces
     {
         Task<User> AddUser(User user);
         Task<ICollection<User>> GetAllUsers();
-        Task<User> GetUserById(int userId);
-        Task<User> GetUserByUserName(string userName);
-        Task<User> UpdateUser(int userId, User user);
-        Task<User> DeleteUser(int userId);
+        Task<User> GetUser(string userName);
+        Task<User> UpdateUser(User user);
+        Task<User> DeleteUser(string userName);
     }
 }

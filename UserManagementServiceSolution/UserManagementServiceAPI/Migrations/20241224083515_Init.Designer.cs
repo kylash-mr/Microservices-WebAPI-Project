@@ -11,8 +11,8 @@ using UserManagementServiceAPI.DbContexts;
 namespace UserManagementServiceAPI.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20241223143940_addedRoleColumn")]
-    partial class addedRoleColumn
+    [Migration("20241224083515_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,31 +26,31 @@ namespace UserManagementServiceAPI.Migrations
 
             modelBuilder.Entity("UserManagementServiceAPI.Models.User", b =>
                 {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<byte[]>("Key")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("PhoneNumber")
+                    b.Property<byte[]>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserCity")
+                    b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserAge")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -59,28 +59,6 @@ namespace UserManagementServiceAPI.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            Email = "johndoe@gmail.com",
-                            Password = "JohnDoe123",
-                            PhoneNumber = "9422221230",
-                            Role = "Patient",
-                            UserCity = "Chennai",
-                            UserName = "John"
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            Email = "dralex@apollo.com",
-                            Password = "AlexAdmin",
-                            PhoneNumber = "9022296230",
-                            Role = "Doctor",
-                            UserCity = "Chennai",
-                            UserName = "Alex"
-                        });
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using UserManagementServiceAPI.DbContexts;
 using UserManagementServiceAPI.Interfaces;
 using UserManagementServiceAPI.Models;
@@ -21,9 +22,16 @@ namespace UserManagementServiceAPI.Repositories
             return user;
         }
 
-        public Task<User> DeleteUser(int userId)
+        public async Task<User> DeleteUser(string userId)
         {
-            throw new NotImplementedException();
+            var user =  await GetUser(userId);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+             _userDbContext.Users.Remove(user);
+            await _userDbContext.SaveChangesAsync();
+            return user;
         }
 
         public async Task<ICollection<User>> GetAllUsers()
@@ -35,14 +43,14 @@ namespace UserManagementServiceAPI.Repositories
             return await _userDbContext.Users.ToListAsync();
         }
 
-        public async Task<User> GetUserById(int userId)
+        public async Task<User> GetUser(string userName)
         { 
-            if (userId <= 0)
+            if (userName == "" || userName == null)
             {
                 throw new Exception("Invalid UserId");
             }
 
-            var usertofetch = await _userDbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            var usertofetch = await _userDbContext.Users.SingleOrDefaultAsync(u => u.UserName == userName);
             if (usertofetch == null)
             {
                 throw new Exception("User not found in the database");
@@ -50,39 +58,17 @@ namespace UserManagementServiceAPI.Repositories
             return usertofetch;
         }
 
-        public Task<User> GetUserByUserName(string userName)
+       
+        public async Task<User> UpdateUser(User user)
         {
-            if(userName == null || userName == "")
-            {
-                throw new Exception("Invalid UserName");
-            }
-            var user = _userDbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
-            if (user == null)
-            {
-                throw new Exception("User not found in the database");
-            }
-            return user;
-        }
-
-        public async Task<User> UpdateUser(int userId, User user)
-        {
-            var usertoupdate = GetUserById(userId);
+            var usertoupdate =await  GetUser(user.UserName);
             if (usertoupdate == null)
             {
                 throw new Exception("User not found in the database");
             }
-            if(usertoupdate.Id == user.UserId)
-            {
-                throw new Exception("User already exists");
-            }
-            usertoupdate.Result.UserName = user.UserName;
-            usertoupdate.Result.Password = user.Password;
-            usertoupdate.Result.PhoneNumber = user.PhoneNumber;
-            usertoupdate.Result.Email = user.Email;
-            usertoupdate.Result.UserCity = user.UserCity;
-            usertoupdate.Result.Role = user.Role;
-            await _userDbContext.SaveChangesAsync();
-            return await usertoupdate;
+             _userDbContext.Users.Update(user);
+             await _userDbContext.SaveChangesAsync();
+            return  usertoupdate;
 
         }
     }

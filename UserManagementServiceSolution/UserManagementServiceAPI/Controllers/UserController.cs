@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using UserManagementServiceAPI.Interfaces;
@@ -19,12 +20,16 @@ namespace UserManagementServiceAPI.Controllers
 
         [HttpPost("register")]
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status201Created)]
-        public async Task<IActionResult> RegisterUser([FromBody] UserRegisterDTO userRegisterDTO)
+        public async Task<ActionResult<UserDTO>> RegisterUser([FromBody] UserRegisterDTO userRegisterDTO)
         {
             try
             {
                 var user = await _userService.RegisterUser(userRegisterDTO);
-                return Created("User successfully registered", user);
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+                return Created("User registration is successful",user);
             }
             catch (Exception ex)
             {
@@ -40,7 +45,7 @@ namespace UserManagementServiceAPI.Controllers
             try
             {
                 var user = await _userService.LoginUser(userLoginDTO);
-                return Ok("User successfully LoggedIn");
+                return Ok("User Login is successful");
 
             }
             catch (Exception ex)
@@ -50,12 +55,13 @@ namespace UserManagementServiceAPI.Controllers
         }
 
         [HttpPut("{userId}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> UpdateUser(int userId, [FromBody] UserDTO userDTO)
+        public async Task<ActionResult> UpdateUser(string userId, [FromBody] UserDTO userDTO)
         {
             try
             {
-                var user = await _userService.UpdateUser(userId, userDTO);
+                var user = await _userService.UpdateUser(userDTO);
                 if (user == null)
                 {
                     return BadRequest("Invalid User ID");
@@ -72,17 +78,13 @@ namespace UserManagementServiceAPI.Controllers
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status400BadRequest)]
 
-        public async Task<IActionResult> GetUserById(int userId)
+        public async Task<IActionResult> GetUserById(string userId)
         {
             try {
                 var user = await _userService.GetUserById(userId);
                 if (user == null)
                 {
                     return NotFound($"No Users found with User ID - {userId}");
-                }
-                if (user.UserId <= 0)
-                {
-                    return BadRequest("Invalid User ID");
                 }
                 return Ok(user);
             }

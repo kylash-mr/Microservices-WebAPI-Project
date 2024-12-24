@@ -6,8 +6,9 @@ namespace UserManagementServiceAPI.Interfaces
     public interface IUserService
     {
         public Task<UserRegisterDTO> RegisterUser(UserRegisterDTO userRegisterDTO);
-        public Task<UserDTO> GetUserById(int userId);
-        public Task<UserLoginDTO> LoginUser(UserLoginDTO userLoginDTO);
-        public Task<User> UpdateUser(int userId, UserDTO userDTO);
+        public Task<UserDTO> GetUserById(string userId);
+        public Task<UserDTO> LoginUser(UserLoginDTO userLoginDTO);
+        public Task<User> UpdateUser(UserDTO userDTO);
+        public Task<string> GenerateToken(UserDTO user);
     }
 }
