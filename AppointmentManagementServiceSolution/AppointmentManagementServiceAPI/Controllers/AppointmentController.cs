@@ -77,7 +77,7 @@ namespace AppointmentManagementAPI.Controllers
                 var result = await _appointmentService.CancelAppointmentAsync(id);
                 if (result)
                 {
-                    return NoContent(); // No content indicates successful cancellation
+                    return NoContent(); 
                 }
                 return NotFound("Appointment not found");
             }

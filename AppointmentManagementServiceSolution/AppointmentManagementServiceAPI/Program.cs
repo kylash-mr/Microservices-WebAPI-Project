@@ -27,8 +27,8 @@ namespace AppointmentManagementServiceAPI
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = builder.Configuration["Authentication:Authority"]; // URL to the User Management API
-                    options.Audience = builder.Configuration["Authentication:Audience"];   // Audience for the Appointment API
+                    options.Authority = builder.Configuration["Authentication:Authority"];
+                    options.Audience = builder.Configuration["Authentication:Audience"]; 
                     options.RequireHttpsMetadata = false;  // Set to true for production
                 });
             #endregion
