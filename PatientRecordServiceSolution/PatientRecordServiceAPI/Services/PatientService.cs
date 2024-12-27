@@ -98,21 +98,21 @@ namespace PatientRecordServiceAPI.Services
             if (patient == null)
                 throw new KeyNotFoundException($"Patient with ID {id} not found");
 
-            var appointmentResponse = await _httpClient.GetAsync($"http://appointment-service/api/appointments/patient/{id}");
+            var appointmentResponse = await _httpClient.GetAsync($"http://localhost:5184/api/appointments/patient/{id}");
             if (!appointmentResponse.IsSuccessStatusCode)
                 throw new HttpRequestException("Failed to fetch appointments.");
 
             var appointmentContent = await appointmentResponse.Content.ReadAsStringAsync();
             var appointments = JsonSerializer.Deserialize<List<object>>(appointmentContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            var doctorResponse = await _httpClient.GetAsync($"http://doctor-service/api/doctors/{id}");
+            var doctorResponse = await _httpClient.GetAsync($"http://localhost:5053/api/doctors/{id}");
             if (!doctorResponse.IsSuccessStatusCode)
                 throw new HttpRequestException("Failed to fetch doctor details.");
 
             var doctorContent = await doctorResponse.Content.ReadAsStringAsync();
             var doctorDetails = JsonSerializer.Deserialize<object>(doctorContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            var userResponse = await _httpClient.GetAsync($"http://usermanagement-service/api/users/{id}");
+            var userResponse = await _httpClient.GetAsync($"http://localhost:5271/api/users/{id}");
             if (!userResponse.IsSuccessStatusCode)
                 throw new HttpRequestException("Failed to fetch user details.");
 

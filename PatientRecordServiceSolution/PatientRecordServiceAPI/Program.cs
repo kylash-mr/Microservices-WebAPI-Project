@@ -31,16 +31,15 @@ namespace PatientRecordServiceAPI
 
             builder.Services.AddHttpClient("AppointmentService", client =>
             {
-                client.BaseAddress = new Uri(builder.Configuration["Services:AppointmentService"]);
+                client.BaseAddress = new Uri(builder.Configuration["Services:Appointment"]);
             });
 
             builder.Services.AddHttpClient("DoctorService", client =>
             {
-                client.BaseAddress = new Uri(builder.Configuration["Services:DoctorService"]);
+                client.BaseAddress = new Uri(builder.Configuration["Services:Doctor"]);
             });
             #endregion
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -52,7 +51,7 @@ namespace PatientRecordServiceAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
