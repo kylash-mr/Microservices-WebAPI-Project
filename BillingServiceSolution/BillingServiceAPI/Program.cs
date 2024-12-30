@@ -15,17 +15,19 @@ namespace BillingServiceAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            // Register DbContext with dependency injection
+            #region Register DbContext
             builder.Services.AddDbContext<BillingDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            #endregion
 
-            // Register repositories
+            #region Register Repositories
             builder.Services.AddScoped<IBillingRepository, BillingRepository>();
             builder.Services.AddScoped<IBillingItemRepository, BillingItemRepository>();
-
-            // Register services
+            #endregion
+            #region Register Services
             builder.Services.AddScoped<IBillingService, BillingsService>();
             builder.Services.AddScoped<IBillingItemService, BillingItemService>();
+            #endregion
 
             builder.Services.AddSingleton<HttpClient>(new HttpClient
             {
@@ -47,13 +49,11 @@ namespace BillingServiceAPI
 
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
