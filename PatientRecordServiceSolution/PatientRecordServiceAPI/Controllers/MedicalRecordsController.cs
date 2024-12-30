@@ -73,7 +73,7 @@ namespace PatientRecordServiceAPI.Controllers
         {
             try
             {
-                record.RecordId = id; // Ensure the ID matches
+                record.RecordId = id; 
                 await _medicalRecordService.UpdateRecordAsync(record);
                 return NoContent();
             }
