@@ -23,10 +23,8 @@ namespace AppointmentManagementServiceAPI.Services
                 throw new KeyNotFoundException("Appointment not found");
             }
 
-            // Mark appointment as cancelled
             appointment.Status = "Cancelled";
 
-            // Save changes
             var result = await _appointmentRepository.UpdateAppointmentAsync(appointment);
             return result != null;
         }
@@ -42,7 +40,6 @@ namespace AppointmentManagementServiceAPI.Services
             {
                 throw new ArgumentException("Invalid doctor ID");
             }
-            // Map AppointmentDTO to Appointment model
             var appointment = new Appointment
             {
                 PatientId = AppointmentDTO.PatientId,
@@ -52,10 +49,8 @@ namespace AppointmentManagementServiceAPI.Services
                 Status = "Booked"
             };
 
-            // Save the appointment
             var createdAppointment = await _appointmentRepository.AddAppointmentAsync(appointment);
 
-            // Map the saved appointment back to AppointmentDTO
             var createdAppointmentDTO = new AppointmentDTO
             {
                 Id = createdAppointment.Id,

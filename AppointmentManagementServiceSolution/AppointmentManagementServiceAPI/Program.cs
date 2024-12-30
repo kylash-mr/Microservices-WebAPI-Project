@@ -29,7 +29,7 @@ namespace AppointmentManagementServiceAPI
                 {
                     options.Authority = builder.Configuration["Authentication:Authority"];
                     options.Audience = builder.Configuration["Authentication:Audience"]; 
-                    options.RequireHttpsMetadata = false;  // Set to true for production
+                    options.RequireHttpsMetadata = false;
                 });
             #endregion
             #region Repositories
@@ -47,7 +47,6 @@ namespace AppointmentManagementServiceAPI
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

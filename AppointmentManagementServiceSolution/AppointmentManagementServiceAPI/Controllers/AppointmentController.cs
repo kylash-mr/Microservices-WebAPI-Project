@@ -15,7 +15,6 @@ namespace AppointmentManagementAPI.Controllers
             _appointmentService = appointmentService;
         }
 
-        // POST: api/appointments
         [HttpPost]
         public async Task<ActionResult<AppointmentDTO>> CreateAppointment(AppointmentDTO AppointmentDTO)
         {
@@ -30,7 +29,6 @@ namespace AppointmentManagementAPI.Controllers
             }
         }
 
-        // GET: api/appointments/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<AppointmentDTO>> GetAppointmentById(int id)
         {
@@ -45,7 +43,6 @@ namespace AppointmentManagementAPI.Controllers
             }
         }
 
-        // GET: api/appointments/patient/{patientId}
         [HttpGet("patient/{patientId}")]
         public async Task<ActionResult<IEnumerable<AppointmentDTO>>> GetAppointmentsByPatientId(string patientId)
         {
@@ -53,7 +50,6 @@ namespace AppointmentManagementAPI.Controllers
             return Ok(appointments);
         }
 
-        // PUT: api/appointments/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<AppointmentDTO>> UpdateAppointment(int id, AppointmentDTO AppointmentDTO)
         {
@@ -68,7 +64,6 @@ namespace AppointmentManagementAPI.Controllers
             }
         }
 
-        // DELETE: api/appointments/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> CancelAppointment(int id)
         {
