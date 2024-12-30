@@ -35,7 +35,7 @@ namespace BillingServiceAPI.Controllers
             }
 
             await _billingItemService.AddBillingItemAsync(billingItemDTO);
-            return CreatedAtAction(nameof(GetBillingItemsByBillingId), new { billingId = billingItemDTO.BillingId }, billingItemDTO);
+            return Ok(new { message = "Billing created successfully", data = billingItemDTO });
         }
 
         [HttpPut("{billingItemId}")]
