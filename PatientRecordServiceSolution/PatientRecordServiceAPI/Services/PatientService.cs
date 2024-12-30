@@ -103,21 +103,28 @@ namespace PatientRecordServiceAPI.Services
                 throw new HttpRequestException("Failed to fetch appointments.");
 
             var appointmentContent = await appointmentResponse.Content.ReadAsStringAsync();
-            var appointments = JsonSerializer.Deserialize<List<object>>(appointmentContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var appointments = JsonSerializer.Deserialize<List<object>>(appointmentContent, new JsonSerializerOptions
+            { PropertyNameCaseInsensitive = true });
 
             var doctorResponse = await _httpClient.GetAsync($"http://localhost:5053/api/doctors/{id}");
             if (!doctorResponse.IsSuccessStatusCode)
                 throw new HttpRequestException("Failed to fetch doctor details.");
 
             var doctorContent = await doctorResponse.Content.ReadAsStringAsync();
-            var doctorDetails = JsonSerializer.Deserialize<object>(doctorContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var doctorDetails = JsonSerializer.Deserialize<object>(doctorContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
             var userResponse = await _httpClient.GetAsync($"http://localhost:5271/api/users/{id}");
             if (!userResponse.IsSuccessStatusCode)
                 throw new HttpRequestException("Failed to fetch user details.");
 
             var userContent = await userResponse.Content.ReadAsStringAsync();
-            var userDetails = JsonSerializer.Deserialize<object>(userContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var userDetails = JsonSerializer.Deserialize<object>(userContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
             var patientDetails = new
             {
@@ -127,7 +134,7 @@ namespace PatientRecordServiceAPI.Services
                 UserDetails = userDetails
             };
 
-            return patient;  
+            return patient;
         }
     }
 }
